@@ -1,11 +1,30 @@
 {
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7"
+  },
   "name": "botmatos",
   "version": "1.0.0",
   "description": "Robô de atendimento prévio ao whatsapp",
-  "main": "index.js",
+  "main": "./dist/js/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run compile && node dist/js/app.js",
+    "compile": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renatofmatos/botMatos.git"
   },
   "author": "Renato Matos",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/renatofmatos/botMatos/issues"
+  },
+  "homepage": "https://github.com/renatofmatos/botMatos#readme",
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.3"
+  }
 }
