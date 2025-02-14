@@ -13,7 +13,6 @@
   "main": "./dist/js/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    // "start": "npm run compile && node dist/js/app.js",
     "start": "node dist/js/app.js",
     "build": "tsc"
   },
