@@ -1,37 +1,26 @@
-const axios = require("axios");
-const dotenv = require("dotenv");
+import express, { Request, Response } from 'express';
+import dotenv from 'dotenv';
 
 dotenv.config();
+const app = express();
+const port = process.env.PORT;
+const apikey = process.env.API_KEY;
 
-const TOKEN = process.env.WHATSAPP_TOKEN;
-const REMETENTE_ID = process.env.REMETENTE_ID;
-const destinatario = '5561993348881'
+app.use(express.json());
 
-async function sendWhatsAppMessage(to: string) {
-    const url = `https://graph.facebook.com/v21.0/${REMETENTE_ID}/messages`;
-  
-    const payload = {
-      messaging_product: 'whatsapp',
-      to,
-      type: 'template',
-      template: {
-        name: 'teste',
-        language: { code: 'pt_BR' }
-      },
-    };
+app.post('/webhook', (req: Request, res: Response) => {
+  // Verifique o token de verificação (veja o passo 3)
+  if (
+    req.query['hub.mode'] === 'subscribe' &&
+    req.query['hub.verify_token'] === apikey
+  ) {
+    res.send(req.query['hub.challenge']);
+  } else {
+    console.log('Evento recebido:', req.body); // Aqui você processará as mensagens
+    res.sendStatus(200); // Responda sempre com 200 para o WhatsApp
+  }
+});
 
-    try {
-        const response = await axios.post(url, payload, {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-        });
-    
-        console.log('Message sent:', response.data);
-      } catch (error: any) {
-        console.error('Error sending message:', error.response?.data || error.message);
-      }
-    }
-
-sendWhatsAppMessage(destinatario);
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
+});
