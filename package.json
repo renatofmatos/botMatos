@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/renatofmatos/botMatos#readme",
   "devDependencies": {
-    "@types/node": "^22.13.4",
-    "concurrently": "^9.1.0"
+    "@types/node": "^22.13.4"
   }
 }
