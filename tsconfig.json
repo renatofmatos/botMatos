@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "target": "es2020",
-        "outDir": "./dist/js",
+        "outDir": "./dist",
+        "rootDir": "./src",
         "noEmitOnError": true,
         "module": "CommonJS",
         "moduleResolution": "Node",
@@ -15,6 +16,9 @@
         "forceConsistentCasingInFileNames": true
     },
     "include": [
-        "src/app/**/*"
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }

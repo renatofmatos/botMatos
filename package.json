@@ -13,7 +13,7 @@
   "main": "./dist/js/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/js/app.js",
+    "start": "node dist/api/webhook.js",
     "build": "tsc"
   },
   "repository": {
