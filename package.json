@@ -10,7 +10,7 @@
   "name": "botmatos",
   "version": "1.0.0",
   "description": "Robô de atendimento prévio ao whatsapp",
-  "main": "./dist/js/app.js",
+  "main": "./dist/api/webhook.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/api/webhook.js",
