@@ -1,21 +1,9 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "./dist/api/webhook.js",
-        "use": "@vercel/node",
-        "config": {
-          "installCommand": "npm install",
-          "buildCommand": "npm run build",
-          "startCommand": "npm start"
-        }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/webhook",
-        "dest": "/api/webhook",
-        "methods": ["POST"]
-      }
-    ]
-  }
+  "version": 2,
+  "functions": {
+    "api/webhook.ts": { "runtime": "@vercel/node" }
+  },
+  "routes": [
+    { "src": "/api/webhook", "dest": "/api/webhook.ts" }
+  ]
+}
