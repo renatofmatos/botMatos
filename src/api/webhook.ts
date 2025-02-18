@@ -8,7 +8,7 @@ const apikey = process.env.API_KEY;
 
 app.use(express.json());
 
-app.post('/webhook', (req: Request, res: Response) => {
+app.post('/api/webhook', (req: Request, res: Response) => {
   // Verifique o token de verificação (veja o passo 3)
   if (
     req.query['hub.mode'] === 'subscribe' &&
