@@ -14,6 +14,7 @@
   "main": "./dist/api/webhook.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "teste": "echo Iniciando_build",
     "build": "tsc",
     "start": "node dist/api/webhook.js"
   },
