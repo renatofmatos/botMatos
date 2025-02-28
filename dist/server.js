@@ -25,4 +25,5 @@ async function iniciarServidor() {
 }
 ;
 iniciarServidor();
+exports.default = iniciarServidor;
 //# sourceMappingURL=server.js.map
