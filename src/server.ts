@@ -24,3 +24,5 @@ async function iniciarServidor() {
 };
 
 iniciarServidor();
+
+export default iniciarServidor;
