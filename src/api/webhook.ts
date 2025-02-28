@@ -14,10 +14,11 @@ app.post('/api/webhook', (req: Request, res: Response) => {
     req.query['hub.mode'] === 'subscribe' &&
     req.query['hub.verify_token'] === apikey
   ) {
+    console.log('APIKEY autorizada');
     res.send(req.query['hub.challenge']);
   } else {
-    console.log('Evento recebido:', req.body); // Aqui você processará as mensagens
-    res.sendStatus(200); // Responda sempre com 200 para o WhatsApp
+    console.log('Evento recebido:', req.body);
+    res.sendStatus(200);
   }
 });
 

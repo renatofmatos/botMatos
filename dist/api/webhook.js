@@ -13,6 +13,7 @@ app.use(express_1.default.json());
 app.post('/api/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
         req.query['hub.verify_token'] === apikey) {
+        console.log('APIKEY autorizada');
         res.send(req.query['hub.challenge']);
     }
     else {
@@ -21,7 +22,6 @@ app.post('/api/webhook', (req, res) => {
     }
 });
 app.listen(port, () => {
-    console.log(`Servidor iniciando`);
     console.log(`Servidor rodando na porta ${port}`);
 });
 exports.default = app;
