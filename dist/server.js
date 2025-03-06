@@ -4,16 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
-const app_js_1 = __importDefault(require("./api/app.js"));
 const dbConnect_js_1 = __importDefault(require("./config/dbConnect.js"));
 const port = process.env.PORT;
 async function iniciarServidor() {
+    let conexao;
     try {
-        const conexao = await (0, dbConnect_js_1.default)();
+        if (!conexao) {
+            await (0, dbConnect_js_1.default)();
+        }
+        ;
         if (conexao) {
-            app_js_1.default.listen(port, () => {
-                console.log(`Servidor escutando na porta ${port}`);
-            });
         }
         else {
             console.error('Falha ao iniciar o servidor');

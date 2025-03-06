@@ -5,9 +5,12 @@ import conectarAoBanco from './config/dbConnect.js';
 const port = process.env.PORT;
 
 async function iniciarServidor() {
+    let conexao
     try {
-        const conexao = await conectarAoBanco();
-
+        if (!conexao) {
+            await conectarAoBanco();
+        };
+        
         if (conexao) {
 
             app.listen(port, () => {
@@ -24,5 +27,3 @@ async function iniciarServidor() {
 };
 
 iniciarServidor();
-
-export default iniciarServidor;
