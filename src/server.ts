@@ -5,11 +5,9 @@ import conectarAoBanco from './config/dbConnect.js';
 const port = process.env.PORT;
 
 async function iniciarServidor() {
-    let conexao
     try {
-        if (!conexao) {
-            await conectarAoBanco();
-        };
+        
+        const conexao = await conectarAoBanco();
         
         if (conexao) {
 
@@ -18,7 +16,7 @@ async function iniciarServidor() {
             })
 
         } else {
-            console.error('Falha ao iniciar o servidor');
+            console.error('Conexão com o BD inexistente');
         }
 
     } catch (error) {
