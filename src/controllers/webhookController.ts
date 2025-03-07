@@ -22,6 +22,7 @@ class WebhookController {
 
     static async mensagemRecebida(req: Request, res: Response) {
         console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
+        res.sendStatus(200);
     };
 
 };
