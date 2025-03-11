@@ -23,9 +23,9 @@ export class Atendimento {
     @prop({ required: true })
     private _situacaoAtendimento: SituacaoAtendimento;
 
-    constructor(identificacaoRetemente: string, nomeCliente: string, dataInicioAtendimento: Date, situacaoAtendimento: SituacaoAtendimento) {
+    constructor(remetenteId: string, nomeCliente: string, dataInicioAtendimento: Date, situacaoAtendimento: SituacaoAtendimento) {
         this._numeroProtocolo = this.gerarProtocolo();
-        this._remetenteId = identificacaoRetemente;
+        this._remetenteId = remetenteId;
         this._dataInicioAtendimento = dataInicioAtendimento;
         this._nomeContato = nomeCliente;
         this._situacaoAtendimento = situacaoAtendimento;
@@ -35,7 +35,7 @@ export class Atendimento {
         return this._numeroProtocolo;
     }
 
-    get identificadorRemetente() {
+    get remetenteId() {
         return this._remetenteId;
     }
 
