@@ -1,6 +1,6 @@
-import cliente from "../models/Cliente.js";
+import cliente from "../models/cliente.js";
 import { Request, Response } from "express";
-import { meioDeContato } from "../models/MeioDeContato.js";
+import { meioDeContato } from "../models/meioDeContato.js";
 
 class ClienteController {
     static async listarclientes(req: Request, res: Response) {

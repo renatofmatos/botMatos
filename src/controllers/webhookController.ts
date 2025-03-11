@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
+import { Mensagem } from "../models/mensagem.js";
+import { AtendimentoService } from "../services/atendimentoService.js";
+
 const apikey = process.env.API_KEY;
+
 class WebhookController {
 
     static async validarToken(req: Request, res: Response) {
         try {
-            // Verifique o token de verificação (veja o passo 3)
             if (
                 req.query['hub.mode'] === 'subscribe' &&
                 req.query['hub.verify_token'] === apikey
@@ -22,6 +25,24 @@ class WebhookController {
 
     static async mensagemRecebida(req: Request, res: Response) {
         console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
+
+        const remetenteId: string = req.body.entry?.[0]?.changes[0]?.value?.metadata?.phone_number_id;
+        const nomeContato: string = req.body.entry?.[0]?.changes[0]?.value?.contacts[0]?.profile.name;
+
+        const dataRecebimentoMensagem: Date = new Date(Number(req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.timestamp) * 1000);
+        const corpoMensagem: string = req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.text.body;
+        const tipoConteudoMensagem: string = req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.type;
+
+        const atendimentoProcessado = AtendimentoService.processarMensagem(
+            remetenteId,
+            nomeContato,
+            dataRecebimentoMensagem,
+            corpoMensagem,
+            tipoConteudoMensagem
+        );
+
+        console.log(`Atendimento processado com sucesso!: ${atendimentoProcessado}`);
+
         res.sendStatus(200);
     };
 

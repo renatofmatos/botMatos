@@ -1,4 +1,4 @@
-import { meioDeContato } from "../models/MeioDeContato.js";
+import { meioDeContato } from "../models/meioDeContato.js";
 import { Request, Response } from "express";
 
 class MeioDeContatoController {

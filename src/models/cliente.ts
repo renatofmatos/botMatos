@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { meioDeContatoSchema } from "./MeioDeContato.js";
+import { meioDeContatoSchema } from "./meioDeContato.js";
 
 const clienteSchema = new mongoose.Schema({
     id: { type: mongoose.Schema.ObjectId },
