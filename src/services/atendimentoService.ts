@@ -1,7 +1,5 @@
-import { stringify } from "querystring";
-import { SituacaoAtendimento, TipoRemetente } from "../config/enum.js";
-import { Atendimento, AtendimentoModel } from "../models/atendimento.js";
-import { MensagemModel } from "../models/mensagem.js";
+import { SituacaoAtendimento, TipoConteudoMensagem, TipoRemetente } from "../config/enum.js";
+import { Atendimento } from "../models/atendimento.js";
 import { Mensagem } from "../models/mensagem.js";
 import { MensagemService } from "./mensagemService.js";
 
@@ -11,7 +9,7 @@ export class AtendimentoService {
 
         const REMETENTE_NUMERO = process.env.REMETENTE_NUMERO;
         if (atendimento.situacaoAtendimento === SituacaoAtendimento.NovaMensagem && REMETENTE_NUMERO) {
-            const respostaMensagem = new Mensagem(new Date(), `Estou pronto para te responder!`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, 'text', atendimento.atendimentoId)
+            const respostaMensagem = new Mensagem(new Date(), `menu_opcoes`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, TipoConteudoMensagem.template, atendimento.atendimentoId)
             MensagemService.responderMensagem(respostaMensagem);
         } else {
             console.log(`Não entrou: ${REMETENTE_NUMERO} | ${atendimento.situacaoAtendimento}`)
@@ -26,8 +24,6 @@ export class AtendimentoService {
             } else {
                 return atendimento;
             }
-
-
         } catch (error) {
             console.log(`Erro ao consultar atendimento: ${error}`);
             return undefined;
@@ -35,9 +31,7 @@ export class AtendimentoService {
     }
 
     static async processarMensagem(remetenteId: string, destinatarioId: string, nomeContato: string, dataRecebimentoMensagem: Date, corpoMensagem: string, tipoConteudoMensagem: string
-
     ) {
-
         let atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId);
         if (!atendimentoAberto) {
             const atendimento = new Atendimento(remetenteId, nomeContato, dataRecebimentoMensagem, SituacaoAtendimento.NovaMensagem);
@@ -46,11 +40,8 @@ export class AtendimentoService {
             atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId); //Necessário buscar devido ao campo virtual _id do mongoDB
         };
         if (atendimentoAberto) {
-            const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, tipoConteudoMensagem, atendimentoAberto.atendimentoId);
-            const novaMensagem = new MensagemModel(mensagem);
-            await novaMensagem.save();
-
-
+            const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, Mensagem.converterTipoConteudo(tipoConteudoMensagem), atendimentoAberto.atendimentoId);
+            await Mensagem.salvar(mensagem);
             this.realizarAtendimento(atendimentoAberto, mensagem);
         } else {
             console.log(`Atendimento não encontrado!`)

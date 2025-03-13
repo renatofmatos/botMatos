@@ -1,8 +1,3 @@
-export enum TipoMensagem {
-    Midia = 'M',
-    Texto = 'T'
-}
-
 export enum TipoRemetente{
     Atendente = "A",
     Cliente = "C"
@@ -16,3 +11,8 @@ export enum SituacaoAtendimento {
     VerificaEncerrarAtendimento = 4,
     TransferidoAtendente = 9
 };
+
+export enum TipoConteudoMensagem {
+    template = 'template',
+    texto = 'text'
+}

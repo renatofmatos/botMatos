@@ -1,7 +1,6 @@
-import { prop, getModelForClass, DocumentType, Ref, index } from "@typegoose/typegoose";
+import { prop, getModelForClass, DocumentType } from "@typegoose/typegoose";
 import mongoose from "mongoose";
-import { SituacaoAtendimento, TipoRemetente } from "../config/enum.js";
-import { Mensagem } from "./mensagem.js";
+import { SituacaoAtendimento } from "../config/enum.js";
 import crypto from 'crypto';
 
 export class Atendimento {

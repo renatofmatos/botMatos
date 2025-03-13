@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { Mensagem } from "../models/mensagem.js";
 import { AtendimentoService } from "../services/atendimentoService.js";
 
 const apikey = process.env.API_KEY;

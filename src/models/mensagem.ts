@@ -1,4 +1,4 @@
-import { TipoRemetente } from "../config/enum.js";
+import { TipoConteudoMensagem, TipoRemetente } from "../config/enum.js";
 import { prop, getModelForClass, Ref, mongoose } from "@typegoose/typegoose";
 import { Atendimento } from "./atendimento.js";
 
@@ -27,7 +27,7 @@ export class Mensagem {
     private _tipoConteudoMensagem: string;
 
     @prop({ ref: () => Atendimento, required: true })
-    private _atendimento!: Ref<Atendimento>;
+    private _atendimento: Ref<Atendimento>;
 
     constructor(
         dataRecebimento: Date,
@@ -35,7 +35,7 @@ export class Mensagem {
         tipoRemetente: TipoRemetente,
         remetenteId: string,
         destinatarioId: string,
-        tipoConteudoMensagem: string,
+        tipoConteudoMensagem: TipoConteudoMensagem,
         atendimento: Ref<Atendimento>
     ) {
         this._dataRecebimento = dataRecebimento;
@@ -47,9 +47,9 @@ export class Mensagem {
         this._atendimento = atendimento;
     }
 
-   
-    public get mensagemId(): mongoose.Types.ObjectId {
-        return (this as any)._id?.toString();
+
+    public get mensagemId() {
+        return this._id;
     }
 
     public get destinatarioId(): string {
@@ -76,10 +76,17 @@ export class Mensagem {
         return this._tipoConteudoMensagem;
     }
 
-    redefinirMensagem(dataRecebimento: Date, textoMensagem: string, tipoRemetente: TipoRemetente) {
-        this._dataRecebimento = dataRecebimento;
-        this._corpoMensagem = textoMensagem;
-        this._tipoRemetente = tipoRemetente;
+    static async salvar(mensagem: Mensagem) {
+        MensagemModel.create(mensagem);
+    }
+
+    static converterTipoConteudo(tipoRecebido: string): TipoConteudoMensagem {
+
+        const MAPA_TIPO_CONTEUDO: Record<string, TipoConteudoMensagem> = {
+            'text': TipoConteudoMensagem.texto,
+            'templaste': TipoConteudoMensagem.template
+        };
+        return MAPA_TIPO_CONTEUDO[tipoRecebido] || TipoConteudoMensagem.texto; // Valor padrão caso não encontre
     }
 
 }
