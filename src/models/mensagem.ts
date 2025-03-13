@@ -26,6 +26,9 @@ export class Mensagem {
     @prop({ required: true })
     private _tipoConteudoMensagem: string;
 
+    @prop({ required: true })
+    private _mensagemIdSistemaOrigem: string;
+
     @prop({ ref: () => Atendimento, required: true })
     private _atendimento: Ref<Atendimento>;
 
@@ -36,6 +39,7 @@ export class Mensagem {
         remetenteId: string,
         destinatarioId: string,
         tipoConteudoMensagem: TipoConteudoMensagem,
+        mensagemIdSistemaOrigem: string,
         atendimento: Ref<Atendimento>
     ) {
         this._dataRecebimento = dataRecebimento;
@@ -44,6 +48,7 @@ export class Mensagem {
         this._remetenteId = remetenteId;
         this._destinatarioId = destinatarioId;
         this._tipoConteudoMensagem = tipoConteudoMensagem;
+        this._mensagemIdSistemaOrigem = mensagemIdSistemaOrigem;
         this._atendimento = atendimento;
     }
 
@@ -74,6 +79,14 @@ export class Mensagem {
 
     public get tipoConteudoMensagem(): string {
         return this._tipoConteudoMensagem;
+    }
+
+    public get atendimentoId() {
+        return this._atendimento;
+    }
+
+    public get mensagemIdSistemaOrigem() {
+        return this._mensagemIdSistemaOrigem;
     }
 
     static async salvar(mensagem: Mensagem) {

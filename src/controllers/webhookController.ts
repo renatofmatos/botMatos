@@ -24,14 +24,14 @@ class WebhookController {
 
     static async mensagemRecebida(req: Request, res: Response) {
         console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
-
+        const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
+        const dataRecebimentoMensagem: Date = new Date(Number(message.timestamp) * 1000);
+        const corpoMensagem: string = message.text.body;
+        const remetenteId: string = message.from;
+        const tipoConteudoMensagem: string = message.type;
+        const mensagemIdSistemaOrigem: string = message.id;
         const destinatarioId: string = req.body.entry?.[0]?.changes[0]?.value?.metadata?.display_phone_number;
-        const remetenteId: string = req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.from;
         const nomeContato: string = req.body.entry?.[0]?.changes[0]?.value?.contacts[0]?.profile.name;
-
-        const dataRecebimentoMensagem: Date = new Date(Number(req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.timestamp) * 1000);
-        const corpoMensagem: string = req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.text.body;
-        const tipoConteudoMensagem: string = req.body.entry?.[0]?.changes[0]?.value?.messages[0]?.type;
 
         const atendimentoProcessado = AtendimentoService.processarMensagem(
             remetenteId,
@@ -39,7 +39,8 @@ class WebhookController {
             nomeContato,
             dataRecebimentoMensagem,
             corpoMensagem,
-            tipoConteudoMensagem
+            tipoConteudoMensagem,
+            mensagemIdSistemaOrigem
         );
 
         res.sendStatus(200);

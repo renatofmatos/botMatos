@@ -14,5 +14,6 @@ export enum SituacaoAtendimento {
 
 export enum TipoConteudoMensagem {
     template = 'template',
-    texto = 'text'
+    texto = 'text',
+    statusRead = 'read'
 }

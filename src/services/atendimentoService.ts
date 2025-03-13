@@ -8,8 +8,10 @@ export class AtendimentoService {
     static async realizarAtendimento(atendimento: Atendimento, mensagemRecebida: Mensagem) {
 
         const REMETENTE_NUMERO = process.env.REMETENTE_NUMERO;
+
         if (atendimento.situacaoAtendimento === SituacaoAtendimento.NovaMensagem && REMETENTE_NUMERO) {
-            const respostaMensagem = new Mensagem(new Date(), `menu_opcoes`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, TipoConteudoMensagem.template, atendimento.atendimentoId)
+            MensagemService.marcarMensagemLida(mensagemRecebida);
+            const respostaMensagem = new Mensagem(new Date(), `menu_opcoes`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId)
             MensagemService.responderMensagem(respostaMensagem);
         } else {
             console.log(`Não entrou: ${REMETENTE_NUMERO} | ${atendimento.situacaoAtendimento}`)
@@ -30,7 +32,7 @@ export class AtendimentoService {
         };
     }
 
-    static async processarMensagem(remetenteId: string, destinatarioId: string, nomeContato: string, dataRecebimentoMensagem: Date, corpoMensagem: string, tipoConteudoMensagem: string
+    static async processarMensagem(remetenteId: string, destinatarioId: string, nomeContato: string, dataRecebimentoMensagem: Date, corpoMensagem: string, tipoConteudoMensagem: string, mensagemIdSistemaOrigem: string
     ) {
         let atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId);
         if (!atendimentoAberto) {
@@ -40,7 +42,7 @@ export class AtendimentoService {
             atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId); //Necessário buscar devido ao campo virtual _id do mongoDB
         };
         if (atendimentoAberto) {
-            const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, Mensagem.converterTipoConteudo(tipoConteudoMensagem), atendimentoAberto.atendimentoId);
+            const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, Mensagem.converterTipoConteudo(tipoConteudoMensagem), mensagemIdSistemaOrigem, atendimentoAberto.atendimentoId);
             await Mensagem.salvar(mensagem);
             this.realizarAtendimento(atendimentoAberto, mensagem);
         } else {
