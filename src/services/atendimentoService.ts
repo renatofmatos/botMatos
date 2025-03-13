@@ -10,7 +10,7 @@ export class AtendimentoService {
         const REMETENTE_NUMERO = process.env.REMETENTE_NUMERO;
 
         if (atendimento.situacaoAtendimento === SituacaoAtendimento.NovaMensagem && REMETENTE_NUMERO) {
-            MensagemService.marcarMensagemLida(mensagemRecebida);
+            MensagemService.marcarMensagemLida(mensagemRecebida.mensagemIdSistemaOrigem);
             const respostaMensagem = new Mensagem(new Date(), `menu_opcoes`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId)
             MensagemService.responderMensagem(respostaMensagem);
         } else {

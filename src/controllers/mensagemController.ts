@@ -10,17 +10,16 @@ class MensagemController {
 
   private static criarPayload(mensagem: Mensagem) {
     let data: Record<string, any> = {
-      messaging_product: "whatsapp"
+      messaging_product: "whatsapp",
+      to: mensagem.destinatarioId
     };
 
     // Mapeamento do tipo de conteúdo para os atributos corretos
     const conteudoMapeado: Record<TipoConteudoMensagem, any> = {
       [TipoConteudoMensagem.texto]: {
-        to: mensagem.destinatarioId,
         text: { body: mensagem.corpoMensagem }
       },
       [TipoConteudoMensagem.template]: {
-        to: mensagem.destinatarioId,
         type: "template",
         template: {
           name: mensagem.corpoMensagem,
@@ -28,7 +27,7 @@ class MensagemController {
         }
       },
       [TipoConteudoMensagem.statusRead]: {
-        status: "read",
+        status: TipoConteudoMensagem.statusRead,
         message_id: mensagem.mensagemIdSistemaOrigem
       }
     };
@@ -49,7 +48,7 @@ class MensagemController {
     });
   }
 
-  static async marcarMensagemLida(mensagem: Mensagem) {
+  static async marcarMensagemLida(mensagemIdSistemaOrigem: string) {
     try {
       await axios({
         method: "POST",
@@ -57,7 +56,11 @@ class MensagemController {
         headers: {
           Authorization: `Bearer ${WHATSAPP_TOKEN}`,
         },
-        data: this.criarPayload(mensagem),
+        data: {
+          messaging_product: "whatsapp",
+          status: "read",
+          message_id: mensagemIdSistemaOrigem
+        },
       });
     } catch (error) {
       console.log(`Erro ao tentar marcar a mensagem como lida ${error}`);

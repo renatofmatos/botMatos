@@ -7,7 +7,7 @@ export class MensagemService {
         MensagemController.responderMensagem(mensagem);
     }
 
-    static async marcarMensagemLida(mensagem: Mensagem) {
-        MensagemController.marcarMensagemLida(mensagem);
+    static async marcarMensagemLida(mensagemIdSistemaOrigem: string) {
+        MensagemController.marcarMensagemLida(mensagemIdSistemaOrigem);
     }
 }
