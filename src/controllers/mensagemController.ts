@@ -1,25 +1,25 @@
-import { Request, Response } from "express";
+import axios from "axios";
+import { Mensagem } from "../models/mensagem.js";
 
-const apikey = process.env.API_KEY;
-class Mensagem {
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
+const REMETENTE_ID = process.env.REMETENTE_ID;
 
-    static async criarMensagem(req: Request, res: Response) {
-        try {
-            // Verifique o token de verificação (veja o passo 3)
-            if (
-                req.query['hub.mode'] === 'subscribe' &&
-                req.query['hub.verify_token'] === apikey
-            ) {
-                console.log('APIKEY autorizada');
-                res.send(req.query['hub.challenge']);
-            } else {
-                console.log('ApiKey não autorizada:', req.body);
-                res.sendStatus(200);
-            }
-        } catch (error) {
-            res.status(500).json({ message: `Falha na requisição: ${error}` });
-        }
-    };
+class MensagemController {
+
+    static async responderMensagem(mensagem: Mensagem) {
+        await axios({
+            method: "POST",
+            url: `https://graph.facebook.com/v18.0/${REMETENTE_ID}/messages`,
+            headers: {
+              Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+            },
+            data: {
+              messaging_product: "whatsapp",
+              to: mensagem.destinatarioId,
+              text: { body: mensagem.corpoMensagem },
+            },
+          });
+    }
 }
 
-export default Mensagem;
+export default MensagemController;

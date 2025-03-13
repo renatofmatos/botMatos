@@ -1,18 +1,27 @@
 import { TipoRemetente } from "../config/enum.js";
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
+import { prop, getModelForClass, Ref, mongoose } from "@typegoose/typegoose";
 import { Atendimento } from "./atendimento.js";
 
 
 export class Mensagem {
 
+    @prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+    _id!: mongoose.Types.ObjectId;
+
     @prop({ required: true })
     private _dataRecebimento: Date;
 
     @prop({ required: true })
-    private _textoMensagem: string;
+    private _corpoMensagem: string;
 
     @prop({ required: true })
     private _tipoRemetente: TipoRemetente;
+
+    @prop({ required: true })
+    private _remetenteId: string;
+
+    @prop({ required: true })
+    private _destinatarioId: string;
 
     @prop({ required: true })
     private _tipoConteudoMensagem: string;
@@ -20,20 +29,43 @@ export class Mensagem {
     @prop({ ref: () => Atendimento, required: true })
     private _atendimento!: Ref<Atendimento>;
 
-    constructor(dataRecebimento: Date, textoMensagem: string, tipoRemetente: TipoRemetente, tipoConteudoMensagem: string, atendimento: Ref<Atendimento>) {
+    constructor(
+        dataRecebimento: Date,
+        corpoMensagem: string,
+        tipoRemetente: TipoRemetente,
+        remetenteId: string,
+        destinatarioId: string,
+        tipoConteudoMensagem: string,
+        atendimento: Ref<Atendimento>
+    ) {
         this._dataRecebimento = dataRecebimento;
-        this._textoMensagem = textoMensagem;
+        this._corpoMensagem = corpoMensagem;
         this._tipoRemetente = tipoRemetente;
+        this._remetenteId = remetenteId;
+        this._destinatarioId = destinatarioId;
         this._tipoConteudoMensagem = tipoConteudoMensagem;
         this._atendimento = atendimento;
+    }
+
+   
+    public get mensagemId(): mongoose.Types.ObjectId {
+        return (this as any)._id?.toString();
+    }
+
+    public get destinatarioId(): string {
+        return this._destinatarioId;
+    }
+
+    public get remetenteId(): string {
+        return this._remetenteId;
     }
 
     public get dataRecebimento(): Date {
         return this._dataRecebimento;
     }
 
-    public get textoMensagem(): string {
-        return this._textoMensagem
+    public get corpoMensagem(): string {
+        return this._corpoMensagem
     }
 
     public get tipoRemetente(): TipoRemetente {
@@ -46,7 +78,7 @@ export class Mensagem {
 
     redefinirMensagem(dataRecebimento: Date, textoMensagem: string, tipoRemetente: TipoRemetente) {
         this._dataRecebimento = dataRecebimento;
-        this._textoMensagem = textoMensagem;
+        this._corpoMensagem = textoMensagem;
         this._tipoRemetente = tipoRemetente;
     }
 
