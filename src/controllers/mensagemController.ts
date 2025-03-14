@@ -29,8 +29,8 @@ class MensagemController {
               "type": "body",
               "parameters": [
                 {
-                  "type": "text",
-                  "text": nomeCliente
+                  "type": "nome_cliente",
+                  "nome_cliente": nomeCliente
                 }
               ]
             }
