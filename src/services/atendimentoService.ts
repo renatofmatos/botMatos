@@ -11,7 +11,7 @@ export class AtendimentoService {
 
         if (atendimento.situacaoAtendimento === SituacaoAtendimento.NovaMensagem && REMETENTE_NUMERO) {
             MensagemService.marcarMensagemLida(mensagemRecebida.mensagemIdSistemaOrigem);
-            const respostaMensagem = new Mensagem(new Date(), `menu_opcoes`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId)
+            const respostaMensagem = new Mensagem(new Date(), `menu_principal`, TipoRemetente.Atendente, REMETENTE_NUMERO, mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId)
             MensagemService.responderMensagem(respostaMensagem);
         } else {
             console.log(`Não entrou: ${REMETENTE_NUMERO} | ${atendimento.situacaoAtendimento}`)
