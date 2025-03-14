@@ -23,9 +23,9 @@ class WebhookController {
     };
 
     static async mensagemRecebida(req: Request, res: Response) {
-        console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
         const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
         if (message) {
+            console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
             const dataRecebimentoMensagem: Date = new Date(Number( message.timestamp) * 1000);
             const corpoMensagem: string = message.text?.body ?? message.button?.text ?? null;
             const remetenteId: string = message.from;
