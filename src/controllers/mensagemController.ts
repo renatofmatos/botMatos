@@ -24,13 +24,13 @@ class MensagemController {
         template: {
           name: mensagem.corpoMensagem,
           language: { code: "pt_BR" },
-          "components": [
+          components: [
             {
-              "type": "body",
-              "parameters": [
+              type: "body",
+              parameters: [
                 {
-                  "type": "nome_cliente",
-                  "nome_cliente": nomeCliente
+                  type: "text",
+                  text: nomeCliente
                 }
               ]
             }
