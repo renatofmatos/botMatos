@@ -11,6 +11,7 @@ class MensagemController {
   private static criarPayload(mensagem: Mensagem, nomeCliente?: string) {
     let data: Record<string, any> = {
       messaging_product: "whatsapp",
+      recipient_type: "individual",
       to: mensagem.destinatarioId
     };
 
@@ -30,6 +31,7 @@ class MensagemController {
               parameters: [
                 {
                   type: "text",
+                  paramter_name: "nome_cliente",
                   text: nomeCliente
                 }
               ]
