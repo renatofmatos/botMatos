@@ -31,7 +31,7 @@ class MensagemController {
               parameters: [
                 {
                   type: "text",
-                  paramter_name: "nome_cliente",
+                  parameter_name: "nome_cliente",
                   text: nomeCliente
                 }
               ]
