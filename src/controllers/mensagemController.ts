@@ -8,7 +8,7 @@ const URL_POST_REMETENTE_ID = process.env.URL_POST_REMETENTE_ID;
 
 class MensagemController {
 
-  private static criarPayload(mensagem: Mensagem) {
+  private static criarPayload(mensagem: Mensagem, nomeCliente?: string) {
     let data: Record<string, any> = {
       messaging_product: "whatsapp",
       to: mensagem.destinatarioId
@@ -24,7 +24,18 @@ class MensagemController {
         template: {
           name: mensagem.corpoMensagem,
           language: { code: "pt_BR" }
-        }
+        },
+        "components": [
+          {
+            "type": "body",
+            "parameters": [
+              {
+                "type": "text",
+                "text": nomeCliente
+              }
+            ]
+          }
+        ]
       },
       [TipoConteudoMensagem.statusRead]: {
         status: TipoConteudoMensagem.statusRead,
@@ -36,7 +47,7 @@ class MensagemController {
     return { ...data, ...(conteudoMapeado[mensagem.tipoConteudoMensagem as TipoConteudoMensagem] || {}) };
   }
 
-  static async responderMensagem(mensagem: Mensagem) {
+  static async responderMensagem(mensagem: Mensagem, nomeCliente?: string) {
 
     await axios({
       method: "POST",
@@ -44,7 +55,7 @@ class MensagemController {
       headers: {
         Authorization: `Bearer ${WHATSAPP_TOKEN}`,
       },
-      data: this.criarPayload(mensagem),
+      data: this.criarPayload(mensagem, nomeCliente),
     });
   }
 
