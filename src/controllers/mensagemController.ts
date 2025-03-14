@@ -23,19 +23,19 @@ class MensagemController {
         type: "template",
         template: {
           name: mensagem.corpoMensagem,
-          language: { code: "pt_BR" }
+          language: { code: "pt_BR" },
+          "components": [
+            {
+              "type": "body",
+              "parameters": [
+                {
+                  "type": "text",
+                  "text": nomeCliente
+                }
+              ]
+            }
+          ]
         },
-        "components": [
-          {
-            "type": "body",
-            "parameters": [
-              {
-                "type": "text",
-                "text": nomeCliente
-              }
-            ]
-          }
-        ]
       },
       [TipoConteudoMensagem.statusRead]: {
         status: TipoConteudoMensagem.statusRead,
