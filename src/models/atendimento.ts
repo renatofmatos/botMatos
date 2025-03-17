@@ -43,6 +43,24 @@ export class Atendimento {
         return atendimento;
     }
 
+    public static async buscarAtendimentoAberto(remetenteId: string) {
+        try {
+            const atendimentoDoc = await AtendimentoModel.findOne({
+                _remetenteId: remetenteId,
+                situacaoAtendimento: { $ne: SituacaoAtendimento.AtendimentoEncerrado } // Filtra atendimentos diferentes de "Encerrado"
+            }) as DocumentType<Atendimento>;
+            if (atendimentoDoc) {
+                return Atendimento.fromDocument(atendimentoDoc);
+            } else {
+                console.log(`Não existe atendimento aberto para o remetente: ${remetenteId}`);
+            }
+
+        } catch (error) {
+            console.error(`atendimento.buscarAtendimentoAberto(${remetenteId}) - erro - ${error}`)
+        }
+
+    }
+
     public static async buscarAtendimento(remetenteId: string) {
         const atendimentoDoc = await AtendimentoModel.findOne({ _remetenteId: remetenteId }) as DocumentType<Atendimento>;
         if (atendimentoDoc) {
@@ -77,7 +95,7 @@ export class Atendimento {
         return this._situacaoAtendimento;
     }
 
-    definirSituacaoAtendimento(situacao: SituacaoAtendimento) {
+    public definirSituacaoAtendimento(situacao: SituacaoAtendimento) {
         this._situacaoAtendimento = situacao;
     }
 
@@ -89,7 +107,18 @@ export class Atendimento {
     }
 
     public static async salvar(atendimento: Atendimento) {
-        await AtendimentoModel.create(atendimento);
+        const atendimentoDoc = await AtendimentoModel.create(atendimento) as DocumentType<Atendimento>;
+        return Atendimento.fromDocument(atendimentoDoc);
+    }
+
+    public static async atualizar(atendimento: Atendimento) {
+        try {
+
+            await AtendimentoModel.findByIdAndUpdate(atendimento.atendimentoId, { _situacaoAtendimento: atendimento.situacaoAtendimento });
+
+        } catch (error) {
+            console.error(`Atendimento.atualizar(${atendimento.atendimentoId}, {_situacaoAtendimento: ${atendimento.situacaoAtendimento}}) - Falha - ${error}`);
+        }
     }
 
 }

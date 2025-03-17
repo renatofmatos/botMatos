@@ -5,9 +5,9 @@ export enum TipoRemetente{
 
 export enum SituacaoAtendimento {
     AtendimentoEncerrado = 0,
-    SelecionadoMenu = 1,
+    EncaminhadoMenuAtendimento = 1,
     InicioAtendimento = 2,
-    SolicitadoOrcamento = 3,
+    AguardandoRelatoOrcamento = 3,
     ConhecerHistoria = 4,
     ConhecerProdutos = 5,
     VerificaEncerrarAtendimento = 6,

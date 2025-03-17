@@ -26,7 +26,7 @@ class WebhookController {
         const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
         if (message) {
             console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
-            const dataRecebimentoMensagem: Date = new Date(Number( message.timestamp) * 1000);
+            const dataRecebimentoMensagem: Date =  new Date();//new Date(Number( message.timestamp) * 1000);
             const corpoMensagem: string = message.text?.body ?? message.button?.text ?? null;
             const remetenteId: string = message.from;
             const tipoConteudoMensagem: string = message.type;
@@ -34,7 +34,7 @@ class WebhookController {
             const destinatarioId: string =  req.body.entry?.[0]?.changes[0]?.value?.metadata?.display_phone_number;
             const nomeContato: string = req.body.entry?.[0]?.changes[0]?.value?.contacts[0]?.profile.name;
 
-            const atendimentoProcessado = AtendimentoService.processarMensagem(
+            const atendimentoProcessado = await AtendimentoService.processarMensagem(
                 remetenteId,
                 destinatarioId,
                 nomeContato,

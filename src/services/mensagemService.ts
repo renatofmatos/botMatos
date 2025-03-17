@@ -1,5 +1,6 @@
 import { Mensagem, MensagemModel } from "../models/mensagem.js";
 import MensagemController from "../controllers/mensagemController.js";
+import { Atendimento } from "../models/atendimento.js";
 
 export class MensagemService {
     static responderMensagem(mensagem: Mensagem, nomeCliente?: string) {

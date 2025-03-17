@@ -5,6 +5,12 @@ import { MensagemService } from "./mensagemService.js";
 
 export class AtendimentoService {
 
+    static encerrarAtendimento(atendimento: Atendimento) {
+        const mensagemEncerramento = new Mensagem(new Date(), 'Matos Tecnologia agradece ao contato, volte sempre!.', TipoRemetente.Atendente, this.remetenteNumero(), atendimento.remetenteId, TipoConteudoMensagem.texto, 'N/A', atendimento.atendimentoId);
+        atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AtendimentoEncerrado);
+        MensagemService.responderMensagem(mensagemEncerramento, atendimento.nomeCliente);
+    }
+
     static remetenteNumero() {
 
         const REMETENTE_NUMERO = process.env.REMETENTE_NUMERO;
@@ -18,25 +24,28 @@ export class AtendimentoService {
         switch (mensagemRecebida.corpoMensagem) {
             case RespostaMenu.Orcamento:
                 respostaMenu = new Mensagem(new Date(), 'Ótimo, me encaminhe por aqui mesmo um resumo da sua demanda.', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.SolicitadoOrcamento);
-
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AguardandoRelatoOrcamento);
                 break;
 
             case RespostaMenu.Historia:
                 respostaMenu = new Mensagem(new Date(), 'Estamos construindo um relato, em breve disponibilizaremos', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.ConhecerHistoria);
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.InicioAtendimento);
 
                 break;
 
             case RespostaMenu.Produtos:
                 respostaMenu = new Mensagem(new Date(), 'Trabalhos com automações comerciais de diversos tipos, implementamos robôs de atendimento virtual, sites, paineis de auto atendimento, aplicativos móveis, e demais automações. Também atuamos com análise e mineração de dados.', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.ConhecerProdutos);
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.InicioAtendimento);
 
                 break;
 
             default:
+
+                respostaMenu = new Mensagem(new Date(), 'Por favor, selecione um item do menu.', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 break;
+
         }
+        MensagemService.responderMensagem(respostaMenu, atendimento.nomeCliente);
     }
 
     static realizarAtendimento(atendimento: Atendimento, mensagemRecebida: Mensagem) {
@@ -47,32 +56,36 @@ export class AtendimentoService {
             case SituacaoAtendimento.InicioAtendimento:
                 const respostaMensagem = new Mensagem(new Date(), Template.MenuPrincipal, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 MensagemService.responderMensagem(respostaMensagem, atendimento.nomeCliente);
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.EncaminhadoMenuAtendimento);
+                
                 break;
 
-            case SituacaoAtendimento.SelecionadoMenu:
+            case SituacaoAtendimento.EncaminhadoMenuAtendimento:
                 this.responderSelecaoMenu(atendimento, mensagemRecebida);
                 break;
 
+            case SituacaoAtendimento.AguardandoRelatoOrcamento:
+                //TODO Desenhar e implementar fluxo de pedido de orçamento.
+                const respostaOrcamento = new Mensagem(new Date(), `Obrigado pela descrição, iniciaremos uma avaliação e retornaremos o contato em breve!`, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
+                MensagemService.responderMensagem(respostaOrcamento, atendimento.nomeCliente);
+                AtendimentoService.encerrarAtendimento(atendimento);
+                break;
+
             case SituacaoAtendimento.ConhecerHistoria:
-                const resposta = new Mensagem(new Date(), 'Que tal me conta um pouco sobre sua rotina para viabilizarmos uma automação?', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
+                const resposta = new Mensagem(new Date(), 'Que tal me contar um pouco sobre sua rotina para viabilizarmos uma automação?', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 MensagemService.responderMensagem(mensagemRecebida);
                 break;
 
             default:
                 break;
         }
-
-        if (atendimento.situacaoAtendimento === SituacaoAtendimento.InicioAtendimento) {
-
-
-        } else {
-            console.log(`Não entrou: ${this.remetenteNumero()} | ${atendimento.situacaoAtendimento}`)
-        }
+        Atendimento.atualizar(atendimento);
     }
 
     static async buscaAtendimentoAberto(remetenteId: string) {
         try {
-            const atendimento = await Atendimento.buscarAtendimento(remetenteId);
+            const atendimento = await Atendimento.buscarAtendimentoAberto(remetenteId);
+
             if (!atendimento || atendimento.situacaoAtendimento === SituacaoAtendimento.AtendimentoEncerrado) {
                 return undefined;
             } else {
@@ -89,17 +102,15 @@ export class AtendimentoService {
         let atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId);
         if (!atendimentoAberto) {
             const atendimento = new Atendimento(remetenteId, nomeContato, dataRecebimentoMensagem, SituacaoAtendimento.InicioAtendimento);
-            console.log(`Atendimento criado ${String(atendimento.nomeCliente)}`);
-            await Atendimento.salvar(atendimento);
-            atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId); //Necessário buscar devido ao campo virtual _id do mongoDB
+            console.log(`Atendimento criado ${String(atendimento.nomeCliente)} protocolo: ${atendimento.numeroProtocolo}`);
+            atendimentoAberto = await Atendimento.salvar(atendimento);
         };
         if (atendimentoAberto) {
-            atendimentoAberto.definirSituacaoAtendimento(SituacaoAtendimento.SelecionadoMenu);
             const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, Mensagem.converterTipoConteudo(tipoConteudoMensagem), mensagemIdSistemaOrigem, atendimentoAberto.atendimentoId);
             await Mensagem.salvar(mensagem);
             this.realizarAtendimento(atendimentoAberto, mensagem);
         } else {
-            console.log(`Atendimento não encontrado!`)
+            console.log(`atendimentoService.processarMensagem(${remetenteId}) - Atendimento não encontrado ou não aberto`)
         }
     }
 }
