@@ -33,7 +33,7 @@ export class AtendimentoService {
 
                 break;
 
-            case RespostaMenu.Produtos:
+            case RespostaMenu.Servicos:
                 respostaMenu = new Mensagem(new Date(), 'Trabalhos com automações comerciais de diversos tipos, implementamos robôs de atendimento virtual, sites, paineis de auto atendimento, aplicativos móveis, e demais automações. Também atuamos com análise e mineração de dados.', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 atendimento.definirSituacaoAtendimento(SituacaoAtendimento.InicioAtendimento);
 

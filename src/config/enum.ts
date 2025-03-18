@@ -15,9 +15,9 @@ export enum SituacaoAtendimento {
 };
 
 export enum RespostaMenu {
-    Orcamento = 'Solicitar um orçamento',
-    Produtos = 'Conhecer nossos produtos',
-    Historia = 'Conhecer nossa história'
+    Orcamento = 'orcamento',
+    Servicos = 'servicos',
+    Historia = 'historia'
 };
 
 export enum TipoConteudoMensagem {

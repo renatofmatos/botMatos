@@ -1,3 +1,5 @@
+import { RespostaMenu, SituacaoAtendimento } from "./enum";
+
 export const PayloadMenuPrincipal = {
     type: "interactive",
     interactive: {
@@ -7,7 +9,7 @@ export const PayloadMenuPrincipal = {
         text: "👩‍💻 Atendente virtual"
       },
       body: {
-        text: `Olá nome_cliente seja bem vindo(a) a Matos Tecnologia, será um prazer te ajudar `
+        text: `Olá {{nome_cliente}} seja bem vindo(a) a Matos Tecnologia, será um prazer te ajudar `
       },
       footer: {
         text: "Selecione a opção desejada ⬇️"
@@ -17,21 +19,21 @@ export const PayloadMenuPrincipal = {
           {
             type: "reply",
             reply: {
-              id: "opcao_1",
+              id: RespostaMenu.Orcamento,
               title: "Solicitar orçamento"
             }
           },
           {
             type: "reply",
             reply: {
-              id: "opcao_2",
+              id: RespostaMenu.Servicos,
               title: "Nossos serviços"
             }
           },
           {
             type: "reply",
             reply: {
-              id: "opcao_3",
+              id: RespostaMenu.Historia,
               title: "Nossa história"
             }
           }
