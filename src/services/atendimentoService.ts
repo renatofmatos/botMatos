@@ -57,7 +57,7 @@ export class AtendimentoService {
                 const respostaMensagem = new Mensagem(new Date(), Template.MenuPrincipal, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 MensagemService.responderMensagem(respostaMensagem, atendimento.nomeCliente);
                 atendimento.definirSituacaoAtendimento(SituacaoAtendimento.EncaminhadoMenuAtendimento);
-                
+
                 break;
 
             case SituacaoAtendimento.EncaminhadoMenuAtendimento:
@@ -112,5 +112,21 @@ export class AtendimentoService {
         } else {
             console.log(`atendimentoService.processarMensagem(${remetenteId}) - Atendimento não encontrado ou não aberto`)
         }
+    }
+
+    static async encerrarAtendimentosInativos(): Promise<void> {
+        const cincoMinutosAtras = new Date(Date.now() - 5 * 60 * 1000);
+        const atendimentosAbertos = await Atendimento.buscarAtendimentosAbertos();
+        for (const atendimento of atendimentosAbertos) {
+            const ultimaMensagem = await Mensagem.retornaUltimaMensagem(atendimento.atendimentoId);
+            if (ultimaMensagem?.tipoRemetente === TipoRemetente.Atendente && ultimaMensagem.dataRecebimento < cincoMinutosAtras) {
+                console.log(`Encerrando atendimento do remetente: ${atendimento.remetenteId}`);
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AtendimentoEncerrado);
+                Atendimento.atualizar(atendimento);
+            } else {
+                console.log(`Atendimento dentro do prazo ${ultimaMensagem?.dataRecebimento} horario comparado: ${cincoMinutosAtras}`);
+            }
+        }
+
     }
 }

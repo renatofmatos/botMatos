@@ -102,6 +102,12 @@ export class Mensagem {
         return MAPA_TIPO_CONTEUDO[tipoRecebido] || TipoConteudoMensagem.texto; // Valor padrão caso não encontre
     }
 
+    static async retornaUltimaMensagem(atendimentoId: Ref<Atendimento>) {
+        const ultimaMensagem = await MensagemModel.findOne({_atendimento: atendimentoId})
+        .sort({ _dataRecebimento: -1 });
+        return ultimaMensagem;
+    }
+
 }
 
 export const MensagemModel = getModelForClass(Mensagem, {

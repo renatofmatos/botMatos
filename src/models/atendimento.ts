@@ -1,7 +1,8 @@
 import { prop, getModelForClass, DocumentType } from "@typegoose/typegoose";
 import mongoose from "mongoose";
-import { SituacaoAtendimento } from "../config/enum.js";
+import { SituacaoAtendimento, TipoRemetente } from "../config/enum.js";
 import crypto from 'crypto';
+import { Mensagem } from "./mensagem.js";
 
 export class Atendimento {
 
@@ -70,6 +71,14 @@ export class Atendimento {
             console.log(`Atendimento não encontrado! ${remetenteId}`);
         }
     };
+
+    public static async buscarAtendimentosAbertos() {
+        const atendimentosAbertosDoc = await AtendimentoModel.find({
+            _situacaoAtendimento: { $ne: SituacaoAtendimento.AtendimentoEncerrado }
+        }) as [DocumentType<Atendimento>];
+
+        return atendimentosAbertosDoc.map(doc => this.fromDocument(doc));
+    }
 
     public get atendimentoId() {
         return this._id;

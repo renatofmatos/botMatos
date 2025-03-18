@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import app from './api/app.js'
 import conectarAoBanco from './config/dbConnect.js';
+import "./config/cronJobs.js"
 
 const port = process.env.PORT;
 
