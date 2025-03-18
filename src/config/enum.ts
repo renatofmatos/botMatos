@@ -21,7 +21,7 @@ export enum RespostaMenu {
 };
 
 export enum TipoConteudoMensagem {
-    template = 'template',
+    menuPrincipal = 'menuPrincipal',
     texto = 'text',
     statusRead = 'read'
 };

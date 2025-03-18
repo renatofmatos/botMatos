@@ -54,7 +54,7 @@ export class AtendimentoService {
 
         switch (atendimento.situacaoAtendimento) {
             case SituacaoAtendimento.InicioAtendimento:
-                const respostaMensagem = new Mensagem(new Date(), Template.MenuPrincipal, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.template, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
+                const respostaMensagem = new Mensagem(new Date(), Template.MenuPrincipal, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.menuPrincipal, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 MensagemService.responderMensagem(respostaMensagem, atendimento.nomeCliente);
                 atendimento.definirSituacaoAtendimento(SituacaoAtendimento.EncaminhadoMenuAtendimento);
 

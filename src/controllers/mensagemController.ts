@@ -2,6 +2,7 @@ import axios from "axios";
 import { Mensagem } from "../models/mensagem.js";
 import { TipoConteudoMensagem } from "../config/enum.js";
 import { text } from "stream/consumers";
+import { PayloadMenuPrincipal } from "../config/constantes.js";
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const URL_POST_REMETENTE_ID = process.env.URL_POST_REMETENTE_ID;
@@ -11,7 +12,7 @@ class MensagemController {
   private static criarPayload(mensagem: Mensagem, nomeCliente?: string) {
     let data: Record<string, any> = {
       messaging_product: "whatsapp",
-      recipient_type: "individual",
+      // recipient_type: "individual",
       to: mensagem.destinatarioId
     };
 
@@ -20,25 +21,7 @@ class MensagemController {
       [TipoConteudoMensagem.texto]: {
         text: { body: mensagem.corpoMensagem }
       },
-      [TipoConteudoMensagem.template]: {
-        type: "template",
-        template: {
-          name: mensagem.corpoMensagem,
-          language: { code: "pt_BR" },
-          components: [
-            {
-              type: "body",
-              parameters: [
-                {
-                  type: "text",
-                  parameter_name: "nome_cliente",
-                  text: nomeCliente
-                }
-              ]
-            }
-          ]
-        },
-      },
+      [TipoConteudoMensagem.menuPrincipal]: PayloadMenuPrincipal,
       [TipoConteudoMensagem.statusRead]: {
         status: TipoConteudoMensagem.statusRead,
         message_id: mensagem.mensagemIdSistemaOrigem

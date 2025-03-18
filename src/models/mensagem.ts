@@ -97,7 +97,7 @@ export class Mensagem {
 
         const MAPA_TIPO_CONTEUDO: Record<string, TipoConteudoMensagem> = {
             'text': TipoConteudoMensagem.texto,
-            'templaste': TipoConteudoMensagem.template
+            'templaste': TipoConteudoMensagem.menuPrincipal
         };
         return MAPA_TIPO_CONTEUDO[tipoRecebido] || TipoConteudoMensagem.texto; // Valor padrão caso não encontre
     }
