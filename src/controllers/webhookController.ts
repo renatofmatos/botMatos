@@ -27,7 +27,7 @@ class WebhookController {
         if (message) {
             console.log("Mensagem recebida!:", JSON.stringify(req.body, null, 2));
             const dataRecebimentoMensagem: Date =  new Date();
-            const corpoMensagem: string = message.text?.body ?? message.interactive?.button_reply?.id ?? null;
+            const corpoMensagem: string = message.text?.body ?? message.interactive?.button_reply?.title ?? null;
             const remetenteId: string = message.from;
             const tipoConteudoMensagem: string = message.type;
             const mensagemIdSistemaOrigem: string = message.id;

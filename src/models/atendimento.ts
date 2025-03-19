@@ -48,8 +48,8 @@ export class Atendimento {
         try {
             const atendimentoDoc = await AtendimentoModel.findOne({
                 _remetenteId: remetenteId,
-                situacaoAtendimento: { $ne: SituacaoAtendimento.AtendimentoEncerrado } // Filtra atendimentos diferentes de "Encerrado"
-            }) as DocumentType<Atendimento>;
+                _situacaoAtendimento: { $ne: SituacaoAtendimento.AtendimentoEncerrado } // Filtra atendimentos diferentes de "Encerrado"
+            }).sort({ _dataInicioAtendimentocreatedAt: -1 })  as DocumentType<Atendimento>;
             if (atendimentoDoc) {
                 return Atendimento.fromDocument(atendimentoDoc);
             } else {

@@ -1,14 +1,16 @@
+import { constants } from "buffer";
 import { RespostaMenu, SituacaoAtendimento, Template, TipoConteudoMensagem, TipoRemetente } from "../config/enum.js";
 import { Atendimento } from "../models/atendimento.js";
 import { Mensagem } from "../models/mensagem.js";
 import { MensagemService } from "./mensagemService.js";
+import { TextoHistoria, TextoServicos } from "../config/constantes.js";
 
 export class AtendimentoService {
 
-    static encerrarAtendimento(atendimento: Atendimento) {
-        const mensagemEncerramento = new Mensagem(new Date(), 'Matos Tecnologia agradece ao contato, volte sempre!.', TipoRemetente.Atendente, this.remetenteNumero(), atendimento.remetenteId, TipoConteudoMensagem.texto, 'N/A', atendimento.atendimentoId);
+    static async encerrarAtendimento(atendimento: Atendimento) {
+        const mensagemEncerramento = new Mensagem(new Date(), 'Foi um prazer falar com você! Qualquer dúvida ou necessidade, estou à disposição. Espero que possamos trabalhar juntos em breve. Até mais! 🤝', TipoRemetente.Atendente, this.remetenteNumero(), atendimento.remetenteId, TipoConteudoMensagem.texto, 'N/A', atendimento.atendimentoId);
         atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AtendimentoEncerrado);
-        MensagemService.responderMensagem(mensagemEncerramento, atendimento.nomeCliente);
+        await MensagemService.responderMensagem(mensagemEncerramento, atendimento.nomeCliente);
     }
 
     static remetenteNumero() {
@@ -28,14 +30,14 @@ export class AtendimentoService {
                 break;
 
             case RespostaMenu.Historia:
-                respostaMenu = new Mensagem(new Date(), 'Estamos construindo um relato, em breve disponibilizaremos', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.InicioAtendimento);
+                respostaMenu = new Mensagem(new Date(), TextoHistoria, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AguardandoRelatoOrcamento);
 
                 break;
 
             case RespostaMenu.Servicos:
-                respostaMenu = new Mensagem(new Date(), 'Trabalhos com automações comerciais de diversos tipos, implementamos robôs de atendimento virtual, sites, paineis de auto atendimento, aplicativos móveis, e demais automações. Também atuamos com análise e mineração de dados.', TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.InicioAtendimento);
+                respostaMenu = new Mensagem(new Date(), TextoServicos, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
+                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AguardandoRelatoOrcamento);
 
                 break;
 
@@ -48,7 +50,7 @@ export class AtendimentoService {
         MensagemService.responderMensagem(respostaMenu, atendimento.nomeCliente);
     }
 
-    static realizarAtendimento(atendimento: Atendimento, mensagemRecebida: Mensagem) {
+    static async realizarAtendimento(atendimento: Atendimento, mensagemRecebida: Mensagem) {
 
         MensagemService.marcarMensagemLida(mensagemRecebida.mensagemIdSistemaOrigem);
 
@@ -57,7 +59,6 @@ export class AtendimentoService {
                 const respostaMensagem = new Mensagem(new Date(), Template.MenuPrincipal, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.menuPrincipal, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
                 MensagemService.responderMensagem(respostaMensagem, atendimento.nomeCliente);
                 atendimento.definirSituacaoAtendimento(SituacaoAtendimento.EncaminhadoMenuAtendimento);
-
                 break;
 
             case SituacaoAtendimento.EncaminhadoMenuAtendimento:
@@ -66,9 +67,9 @@ export class AtendimentoService {
 
             case SituacaoAtendimento.AguardandoRelatoOrcamento:
                 //TODO Desenhar e implementar fluxo de pedido de orçamento.
-                const respostaOrcamento = new Mensagem(new Date(), `Obrigado pela descrição, iniciaremos uma avaliação e retornaremos o contato em breve!`, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                MensagemService.responderMensagem(respostaOrcamento, atendimento.nomeCliente);
-                AtendimentoService.encerrarAtendimento(atendimento);
+                const respostaOrcamento = new Mensagem(new Date(), `Obrigado por compartilhar sua necessidade! Vou avaliar com atenção e em breve entro em contato com uma excelente proposta para você. Se precisar de algo mais enquanto isso, estou à disposição!`, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
+                await MensagemService.responderMensagem(respostaOrcamento, atendimento.nomeCliente);
+                await AtendimentoService.encerrarAtendimento(atendimento);
                 break;
 
             case SituacaoAtendimento.ConhecerHistoria:
@@ -104,14 +105,11 @@ export class AtendimentoService {
             const atendimento = new Atendimento(remetenteId, nomeContato, dataRecebimentoMensagem, SituacaoAtendimento.InicioAtendimento);
             console.log(`Atendimento criado ${String(atendimento.nomeCliente)} protocolo: ${atendimento.numeroProtocolo}`);
             atendimentoAberto = await Atendimento.salvar(atendimento);
-        };
-        if (atendimentoAberto) {
-            const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, Mensagem.converterTipoConteudo(tipoConteudoMensagem), mensagemIdSistemaOrigem, atendimentoAberto.atendimentoId);
-            await Mensagem.salvar(mensagem);
-            this.realizarAtendimento(atendimentoAberto, mensagem);
-        } else {
-            console.log(`atendimentoService.processarMensagem(${remetenteId}) - Atendimento não encontrado ou não aberto`)
         }
+
+        const mensagem = new Mensagem(dataRecebimentoMensagem, corpoMensagem, TipoRemetente.Cliente, remetenteId, destinatarioId, Mensagem.converterTipoConteudo(tipoConteudoMensagem), mensagemIdSistemaOrigem, atendimentoAberto.atendimentoId);
+        await Mensagem.salvar(mensagem);
+        this.realizarAtendimento(atendimentoAberto, mensagem);
     }
 
     static async encerrarAtendimentosInativos(): Promise<void> {
@@ -121,10 +119,8 @@ export class AtendimentoService {
             const ultimaMensagem = await Mensagem.retornaUltimaMensagem(atendimento.atendimentoId);
             if (ultimaMensagem?.tipoRemetente === TipoRemetente.Atendente && ultimaMensagem.dataRecebimento < cincoMinutosAtras) {
                 console.log(`Encerrando atendimento do remetente: ${atendimento.remetenteId}`);
-                atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AtendimentoEncerrado);
+                this.encerrarAtendimento(atendimento);
                 Atendimento.atualizar(atendimento);
-            } else {
-                console.log(`Atendimento dentro do prazo ${ultimaMensagem?.dataRecebimento} horario comparado: ${cincoMinutosAtras}`);
             }
         }
 
