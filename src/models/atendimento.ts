@@ -96,7 +96,7 @@ export class Atendimento {
         return this._dataInicioAtendimento;
     }
 
-    get nomeCliente() {
+    get nomeContato() {
         return this._nomeContato;
     }
 

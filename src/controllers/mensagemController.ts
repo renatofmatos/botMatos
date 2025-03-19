@@ -11,13 +11,13 @@ class MensagemController {
   private static payloadMenuPrincipal(nomeCliente?: string) {
     const payload = { ...PayloadMenuPrincipal };
     payload.interactive.body.text = payload.interactive.body.text.replace(
-      "{{nome_cliente}}",
+      '{{nome_cliente}}',
       nomeCliente||''
     );
     return payload;
   }
 
-  private static criarPayload(mensagem: Mensagem, nomeCliente?: string) {
+  private static criarPayload(mensagem: Mensagem, nomeContato?: string) {
     let data: Record<string, any> = {
       messaging_product: "whatsapp",
       to: mensagem.destinatarioId
@@ -28,7 +28,7 @@ class MensagemController {
       [TipoConteudoMensagem.texto]: {
         text: { body: mensagem.corpoMensagem }
       },
-      [TipoConteudoMensagem.menuPrincipal]: this.payloadMenuPrincipal(nomeCliente),
+      [TipoConteudoMensagem.menuPrincipal]: this.payloadMenuPrincipal(nomeContato),
       [TipoConteudoMensagem.statusRead]: {
         status: TipoConteudoMensagem.statusRead,
         message_id: mensagem.mensagemIdSistemaOrigem
@@ -39,7 +39,7 @@ class MensagemController {
     return { ...data, ...(conteudoMapeado[mensagem.tipoConteudoMensagem as TipoConteudoMensagem] || {}) };
   }
 
-  static async responderMensagem(mensagem: Mensagem, nomeCliente?: string) {
+  static async responderMensagem(mensagem: Mensagem, nomeContato?: string) {
 
     await axios({
       method: "POST",
@@ -47,7 +47,7 @@ class MensagemController {
       headers: {
         Authorization: `Bearer ${WHATSAPP_TOKEN}`,
       },
-      data: this.criarPayload(mensagem, nomeCliente),
+      data: this.criarPayload(mensagem, nomeContato),
     });
   }
 

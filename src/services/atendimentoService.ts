@@ -10,7 +10,7 @@ export class AtendimentoService {
     static async encerrarAtendimento(atendimento: Atendimento) {
         const mensagemEncerramento = new Mensagem(new Date(), 'Foi um prazer falar com você! Qualquer dúvida ou necessidade, estou à disposição. Espero que possamos trabalhar juntos em breve. Até mais! 🤝', TipoRemetente.Atendente, this.remetenteNumero(), atendimento.remetenteId, TipoConteudoMensagem.texto, 'N/A', atendimento.atendimentoId);
         atendimento.definirSituacaoAtendimento(SituacaoAtendimento.AtendimentoEncerrado);
-        await MensagemService.responderMensagem(mensagemEncerramento, atendimento.nomeCliente);
+        await MensagemService.responderMensagem(mensagemEncerramento, atendimento.nomeContato);
     }
 
     static remetenteNumero() {
@@ -47,7 +47,7 @@ export class AtendimentoService {
                 break;
 
         }
-        MensagemService.responderMensagem(respostaMenu, atendimento.nomeCliente);
+        MensagemService.responderMensagem(respostaMenu, atendimento.nomeContato);
     }
 
     static async realizarAtendimento(atendimento: Atendimento, mensagemRecebida: Mensagem) {
@@ -57,7 +57,7 @@ export class AtendimentoService {
         switch (atendimento.situacaoAtendimento) {
             case SituacaoAtendimento.InicioAtendimento:
                 const respostaMensagem = new Mensagem(new Date(), Template.MenuPrincipal, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.menuPrincipal, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                MensagemService.responderMensagem(respostaMensagem, atendimento.nomeCliente);
+                MensagemService.responderMensagem(respostaMensagem, atendimento.nomeContato);
                 atendimento.definirSituacaoAtendimento(SituacaoAtendimento.EncaminhadoMenuAtendimento);
                 break;
 
@@ -68,7 +68,7 @@ export class AtendimentoService {
             case SituacaoAtendimento.AguardandoRelatoOrcamento:
                 //TODO Desenhar e implementar fluxo de pedido de orçamento.
                 const respostaOrcamento = new Mensagem(new Date(), `Obrigado por compartilhar sua necessidade! Vou avaliar com atenção e em breve entro em contato com uma excelente proposta para você. Se precisar de algo mais enquanto isso, estou à disposição!`, TipoRemetente.Atendente, this.remetenteNumero(), mensagemRecebida.remetenteId, TipoConteudoMensagem.texto, mensagemRecebida.mensagemIdSistemaOrigem, atendimento.atendimentoId);
-                await MensagemService.responderMensagem(respostaOrcamento, atendimento.nomeCliente);
+                await MensagemService.responderMensagem(respostaOrcamento, atendimento.nomeContato);
                 await AtendimentoService.encerrarAtendimento(atendimento);
                 break;
 
@@ -103,7 +103,7 @@ export class AtendimentoService {
         let atendimentoAberto = await this.buscaAtendimentoAberto(remetenteId);
         if (!atendimentoAberto) {
             const atendimento = new Atendimento(remetenteId, nomeContato, dataRecebimentoMensagem, SituacaoAtendimento.InicioAtendimento);
-            console.log(`Atendimento criado ${String(atendimento.nomeCliente)} protocolo: ${atendimento.numeroProtocolo}`);
+            console.log(`Atendimento criado ${String(atendimento.nomeContato)} protocolo: ${atendimento.numeroProtocolo}`);
             atendimentoAberto = await Atendimento.salvar(atendimento);
         }
 
