@@ -9,7 +9,7 @@ const URL_POST_REMETENTE_ID = process.env.URL_POST_REMETENTE_ID;
 class MensagemController {
 
   private static payloadMenuPrincipal(nomeCliente?: string) {
-    const payload = { ...PayloadMenuPrincipal };
+    const payload = JSON.parse(JSON.stringify(PayloadMenuPrincipal));
     payload.interactive.body.text = payload.interactive.body.text.replace(
       '{{nome_cliente}}',
       nomeCliente||''
