@@ -1,4 +1,3 @@
-import { constants } from "buffer";
 import { RespostaMenu, SituacaoAtendimento, Template, TipoConteudoMensagem, TipoRemetente } from "../config/enum.js";
 import { Atendimento } from "../models/atendimento.js";
 import { Mensagem } from "../models/mensagem.js";
@@ -124,5 +123,24 @@ export class AtendimentoService {
             }
         }
 
+    }
+
+    static async listarAtendimentosAtivosComUltimaMensagem() {
+        try {
+            const atendimentosAbertos = await Atendimento.buscarAtendimentosAbertos();
+            const atendimentosComUltimaMsg = [];
+            
+            for (const atendimento of atendimentosAbertos) {
+                const ultimaMensagem = await Mensagem.retornaUltimaMensagem(atendimento.atendimentoId);
+                atendimentosComUltimaMsg.push({
+                    ...atendimento,
+                    ultimaMensagem: ultimaMensagem ? ultimaMensagem.corpoMensagem : ""
+                });
+            }
+            return atendimentosComUltimaMsg;
+        } catch (error) {
+            console.error(`Erro ao montar atendimentos ativos com ultima mensagem: ${error}`)
+        }
+        
     }
 }
