@@ -130,29 +130,6 @@ export class Atendimento {
         return atendimentosAbertosDoc.map(doc => this.fromDocument(doc));
     }
 
-    // public static async listarAtendimentosComMensagensAtivos() {
-    //     try {
-
-    //         const atendimentos = await this.buscarAtendimentosAbertos();
-    //         if (atendimentos[0]._id) {
-    //             const atendimentosComMensagens = await Promise.all(
-    //                 atendimentos.map(async (atendimento) => {
-    //                     const ultimaMensagem = await Mensagem.retornaUltimaMensagem(atendimento.atendimentoId);
-
-    //                     return {
-    //                         ...atendimento,
-    //                         ultimaMensagem: ultimaMensagem ? ultimaMensagem.corpoMensagem : "Sem mensagens"
-    //                     };
-    //                 })
-    //             );
-
-    //             return atendimentosComMensagens ;
-    //         }
-    //     } catch (error) {
-    //         console.error("Erro ao listar atendimentos ativos:", error);
-    //     }
-    // };
-
 }
 
 
