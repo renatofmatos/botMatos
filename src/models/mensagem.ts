@@ -1,5 +1,5 @@
 import { TipoConteudoMensagem, TipoRemetente } from "../config/enum.js";
-import { prop, getModelForClass, Ref, mongoose } from "@typegoose/typegoose";
+import { prop, getModelForClass, Ref, mongoose, DocumentType } from "@typegoose/typegoose";
 import { Atendimento } from "./atendimento.js";
 
 
@@ -53,6 +53,21 @@ export class Mensagem {
     }
 
 
+    private static fromDocument(doc: DocumentType<Mensagem>): Mensagem {
+        const mensagem = new Mensagem(
+            doc._dataRecebimento,
+            doc._corpoMensagem,
+            doc._tipoRemetente,
+            doc._remetenteId,
+            doc._destinatarioId,
+            doc._tipoConteudoMensagem as TipoConteudoMensagem,
+            doc._mensagemIdSistemaOrigem,
+            doc._atendimento
+        );
+        (mensagem as any)._id = doc._id;
+        return mensagem;
+    }
+
     public get mensagemId() {
         return this._id;
     }
@@ -89,6 +104,7 @@ export class Mensagem {
         return this._mensagemIdSistemaOrigem;
     }
 
+
     static async salvar(mensagem: Mensagem) {
         MensagemModel.create(mensagem);
     }
@@ -103,9 +119,18 @@ export class Mensagem {
     }
 
     static async retornaUltimaMensagem(atendimentoId: Ref<Atendimento>) {
-        const ultimaMensagem = await MensagemModel.findOne({_atendimento: atendimentoId})
-        .sort({ _dataRecebimento: -1 });
+        const ultimaMensagem = await MensagemModel.findOne({ _atendimento: atendimentoId })
+            .sort({ _dataRecebimento: -1 });
         return ultimaMensagem;
+    }
+
+
+    public static async buscarMensagensAtendimento(atendimentoId: Ref<Atendimento>) {
+        const mensagensDoc = await MensagemModel.find({
+            _atendimento: atendimentoId 
+        }) as [DocumentType<Mensagem>];
+
+        return mensagensDoc.map(doc => this.fromDocument(doc));
     }
 
 }

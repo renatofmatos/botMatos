@@ -1,8 +1,7 @@
 import { prop, getModelForClass, DocumentType } from "@typegoose/typegoose";
 import mongoose from "mongoose";
-import { SituacaoAtendimento, TipoRemetente } from "../config/enum.js";
+import { SituacaoAtendimento } from "../config/enum.js";
 import crypto from 'crypto';
-import { Mensagem } from "./mensagem.js";
 
 export class Atendimento {
 
@@ -34,7 +33,7 @@ export class Atendimento {
 
     private static fromDocument(doc: DocumentType<Atendimento>): Atendimento {
         const atendimento = new Atendimento(
-            doc._remetenteId,
+            doc. _remetenteId,
             doc._nomeContato,
             doc._dataInicioAtendimento,
             doc._situacaoAtendimento,
@@ -131,7 +130,6 @@ export class Atendimento {
     }
 
 }
-
 
 export const AtendimentoModel = getModelForClass(Atendimento, {
     schemaOptions: { versionKey: false }
